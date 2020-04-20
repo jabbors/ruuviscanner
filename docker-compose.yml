@@ -1,0 +1,17 @@
+version: '3'
+services:
+  influxdb:
+    image: influxdb:1.7.7-alpine
+    ports:
+        - "127.0.0.1:8086:8086"
+    environment:
+      - INFLUXDB_ADMIN_ENABLED=true
+  grafana:
+    image: grafana/grafana:6.3.2
+    volumes:
+      - ${PWD}/volumes/grafana:/var/lib/grafana
+    ports:
+        - "127.0.0.1:3000:3000"
+    depends_on:
+      - influxdb
+
