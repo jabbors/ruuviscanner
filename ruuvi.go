@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"net"
@@ -33,17 +34,20 @@ type advertisement struct {
 
 // Measurement represents sensor readings transmitted by a RuuviTag
 type Measurement struct {
-	MAC            net.HardwareAddr
-	RSSI           int
-	DataFormat     int
-	Humidity       float64
-	Temperature    float64
-	Pressure       int
-	AccelerationX  float64
-	AccelerationY  float64
-	AccelerationZ  float64
-	BatteryVoltage float64
-	advertisements []advertisement
+	MAC             net.HardwareAddr
+	RSSI            int
+	DataFormat      int
+	Humidity        float64
+	Temperature     float64
+	Pressure        int
+	AccelerationX   float64
+	AccelerationY   float64
+	AccelerationZ   float64
+	BatteryVoltage  float64
+	TxPower         int
+	MovementCounter int
+	SequenceNr      int
+	advertisements  []advertisement
 }
 
 func reverse(b []byte) {
@@ -186,6 +190,35 @@ func (m *Measurement) extractReadingsFormatRaw2(b []byte) error {
 	if len(b) < DataFormatRawV2Length {
 		return fmt.Errorf("not enough data for Raw v2 format")
 	}
+	if b[0] != DataFormatRawV2ID {
+		return fmt.Errorf("format raw v2 mismatch")
+	}
+	// first byte is data format
+	m.DataFormat = DataFormatRawV2ID
+
+	// bytes 2-3 is temperature
+	tempHi := b[1]
+	tempLo := b[2]
+	m.Temperature = float64(int(tempHi)*256+int(tempLo)) / 200
+
+	// bytes 4-5 is humidity
+	m.Humidity = float64(binary.BigEndian.Uint16(b[3:5])) / 400
+
+	// bytes 6-7 is pressure
+	m.Pressure = int(binary.BigEndian.Uint16(b[5:7])) + 50000
+
+	// byts 8-13 are acceleration
+
+	// bytes 14-15 battery and tx power
+	m.BatteryVoltage = float64(binary.BigEndian.Uint16(b[13:15])>>5)/1000 + 1.6
+	m.TxPower = int(b[14]&0x1f)*2 - 40 // (0x1f -> 0001 1111; last five bits)
+
+	// byte 16 is movement counter
+	m.MovementCounter = int(b[15])
+
+	// bytes 17-18 is sequence nr
+	m.SequenceNr = int(binary.BigEndian.Uint16(b[16:18]))
+
 	return nil
 }
 
