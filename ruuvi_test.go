@@ -77,8 +77,8 @@ func TestExtractReadingsFormatRaw1(t *testing.T) {
 
 func TestExtractReadingsFormatRaw2(t *testing.T) {
 	m := Measurement{}
-	// b := []byte{5 18 8 46 237 206 140 2 120 252 208 255 220 173 182 10 171 67 211 74 23 167 94 239}
-	b := []byte{0x05, 0x12, 0x08, 0x2e, 0xed, 0xce, 0x8c, 0x02, 0x78, 0xfc, 0xd0, 0xff, 0xdc, 0xad, 0xb6, 0x10, 0xab, 0x43, 0xd3, 0x4a, 0x17, 0xa7, 0x5e, 0xef}
+	// b := []byte{5, 18, 8, 46, 237, 206, 140, 2, 120, 252, 208, 255, 220, 173, 182, 10, 171, 67, 211, 74, 23, 167, 94, 239}
+	b := []byte{0x05, 0x12, 0x08, 0x2e, 0xed, 0xce, 0x8c, 0x02, 0x78, 0xfc, 0xd0, 0xff, 0xdc, 0xad, 0xb6, 0x0a, 0xab, 0x43, 0xd3, 0x4a, 0x17, 0xa7, 0x5e, 0xef}
 	err := m.extractReadingsFormatRaw2(b)
 	if err != nil {
 		t.Errorf("execpected error with valid input: %s", err)
@@ -99,10 +99,42 @@ func TestExtractReadingsFormatRaw2(t *testing.T) {
 	if m.TxPower != 4 {
 		t.Errorf("expected tx power %d, got %d", 4, m.TxPower)
 	}
-	if m.MovementCounter != 16 {
-		t.Errorf("expected movement counter %d, got %d", 16, m.MovementCounter)
+	if m.MovementCounter != 10 {
+		t.Errorf("expected movement counter %d, got %d", 10, m.MovementCounter)
 	}
 	if m.SequenceNr != 43843 {
 		t.Errorf("expected sequence nr %d, got %d", 43843, m.SequenceNr)
+	}
+}
+
+func TestExtractReadingsFormatRaw2NegativeTemp(t *testing.T) {
+	m := Measurement{}
+	// b := []byte{5, 255, 88, 123, 60, 208, 0, 4, 4, 255, 96, 255, 216, 124, 246, 8, 196, 131, 201, 42, 213, 244, 142, 88}
+	b := []byte{0x05, 0xff, 0x58, 0x7b, 0x3c, 0xd0, 0x00, 0x04, 0x04, 0xff, 0x60, 0xff, 0xd8, 0x7c, 0xf6, 0x08, 0xc4, 0x83, 0xc9, 0x2a, 0xd5, 0xf4, 0x8e, 0x58}
+	err := m.extractReadingsFormatRaw2(b)
+	if err != nil {
+		t.Errorf("execpected error with valid input: %s", err)
+	}
+
+	if m.Temperature != -0.840000 {
+		t.Errorf("expected temperature %2f, got %2f", -0.840000, m.Temperature)
+	}
+	if m.Humidity != 78.870000 {
+		t.Errorf("expected humidity %2f, got %2f", 78.870000, m.Humidity)
+	}
+	if m.Pressure != 103248 {
+		t.Errorf("expected pressure %d, got %d", 103248, m.Pressure)
+	}
+	if m.BatteryVoltage != 2.599000 {
+		t.Errorf("expected battery voltage %2f, got %2f", 2.599000, m.BatteryVoltage)
+	}
+	if m.TxPower != 4 {
+		t.Errorf("expected tx power %d, got %d", 4, m.TxPower)
+	}
+	if m.MovementCounter != 8 {
+		t.Errorf("expected movement counter %d, got %d", 8, m.MovementCounter)
+	}
+	if m.SequenceNr != 50307 {
+		t.Errorf("expected sequence nr %d, got %d", 50307, m.SequenceNr)
 	}
 }

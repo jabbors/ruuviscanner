@@ -193,13 +193,12 @@ func (m *Measurement) extractReadingsFormatRaw2(b []byte) error {
 	if b[0] != DataFormatRawV2ID {
 		return fmt.Errorf("format raw v2 mismatch")
 	}
+
 	// first byte is data format
 	m.DataFormat = DataFormatRawV2ID
 
 	// bytes 2-3 is temperature
-	tempHi := b[1]
-	tempLo := b[2]
-	m.Temperature = float64(int(tempHi)*256+int(tempLo)) / 200
+	m.Temperature = float64(int16(binary.BigEndian.Uint16(b[1:3]))) / 200
 
 	// bytes 4-5 is humidity
 	m.Humidity = float64(binary.BigEndian.Uint16(b[3:5])) / 400
