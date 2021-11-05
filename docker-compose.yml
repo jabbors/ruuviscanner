@@ -7,9 +7,16 @@ services:
     environment:
       - INFLUXDB_ADMIN_ENABLED=true
   grafana:
-    image: grafana/grafana:6.3.2
+    image: grafana/grafana:7.5.11
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/ruuvi
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
-      - ${PWD}/volumes/grafana:/var/lib/grafana
+      - ${PWD}/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ${PWD}/grafana-dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ${PWD}/grafana-dashboard-ruuvioverview.json:/var/lib/grafana/dashboards/ruuvioverview.json
+      - ${PWD}/grafana-dashboard-ruuvisensor.json:/var/lib/grafana/dashboards/ruuvisensor.json
     ports:
         - "127.0.0.1:3000:3000"
     depends_on:
