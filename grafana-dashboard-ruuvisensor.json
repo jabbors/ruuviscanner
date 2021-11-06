@@ -15,8 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1634704841991,
+  "iteration": 1636230400548,
   "links": [],
   "panels": [
     {
@@ -24,6 +23,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -32,6 +38,7 @@
         "x": 0,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 2,
       "legend": {
         "avg": false,
@@ -46,9 +53,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.11",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -62,7 +70,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$gb"
               ],
               "type": "time"
             },
@@ -73,7 +81,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "reading",
+          "measurement": "$rp\".\"reading",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -147,6 +155,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -155,6 +170,7 @@
         "x": 12,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 4,
       "legend": {
         "avg": false,
@@ -169,9 +185,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.11",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -185,7 +202,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$gb"
               ],
               "type": "time"
             },
@@ -196,7 +213,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "reading",
+          "measurement": "$rp\".\"reading",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -270,6 +287,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -278,6 +302,7 @@
         "x": 0,
         "y": 8
       },
+      "hiddenSeries": false,
       "id": 7,
       "legend": {
         "avg": false,
@@ -292,9 +317,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.11",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -313,7 +339,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$gb"
               ],
               "type": "time"
             },
@@ -324,7 +350,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "reading",
+          "measurement": "$rp\".\"reading",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -356,7 +382,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$gb"
               ],
               "type": "time"
             },
@@ -367,7 +393,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "reading",
+          "measurement": "$rp\".\"reading",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -441,6 +467,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -449,6 +482,7 @@
         "x": 12,
         "y": 8
       },
+      "hiddenSeries": false,
       "id": 8,
       "legend": {
         "avg": false,
@@ -463,9 +497,10 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.11",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -479,7 +514,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "$gb"
               ],
               "type": "time"
             },
@@ -490,7 +525,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "reading",
+          "measurement": "$rp\".\"reading",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -560,7 +595,8 @@
       }
     }
   ],
-  "schemaVersion": 19,
+  "refresh": false,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -568,12 +604,14 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
-          "text": "c9:2a:d5:f4:8e:58",
-          "value": "c9:2a:d5:f4:8e:58"
+          "selected": false,
+          "text": "00:11:22:33:44:55",
+          "value": "00:11:22:33:44:55"
         },
         "datasource": "InfluxDB",
         "definition": "SHOW TAG VALUES  ON \"ruuvi\" WITH KEY = \"sensor\";",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -586,7 +624,7 @@
             "value": "c8:58:cd:64:f4:07"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "c9:2a:d5:f4:8e:58",
             "value": "c9:2a:d5:f4:8e:58"
           },
@@ -636,6 +674,62 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "1h",
+          "value": "1h"
+        },
+        "datasource": null,
+        "definition": "SELECT rp FROM grafana_rp.config WHERE time > NOW() - ${__from}ms ORDER BY time ASC LIMIT 1",
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "rp",
+        "options": [],
+        "query": "SELECT rp FROM grafana_rp.config WHERE time > NOW() - ${__from}ms ORDER BY time ASC LIMIT 1",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "1h",
+          "value": "1h"
+        },
+        "datasource": null,
+        "definition": "SELECT gb FROM grafana_rp.config WHERE time > NOW() - ${__from}ms ORDER BY time ASC LIMIT 1",
+        "description": null,
+        "error": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "gb",
+        "options": [],
+        "query": "SELECT gb FROM grafana_rp.config WHERE time > NOW() - ${__from}ms ORDER BY time ASC LIMIT 1",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -660,5 +754,5 @@
   "timezone": "",
   "title": "Ruuvi sensor measurements",
   "uid": "NbgSxy2Zk",
-  "version": 1
+  "version": 2
 }
