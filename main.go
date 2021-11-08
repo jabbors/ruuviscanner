@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -111,11 +112,39 @@ func (p *process) Stop() error {
 	return p.cmd.Process.Kill()
 }
 
+func ensureInfluxDBExists(addr, db string) error {
+	r, err := http.Get(fmt.Sprintf("%s/query?db=%s&q=SHOW+RETENTION+POLICIES", addr, db))
+	if err != nil {
+		return fmt.Errorf("influxdb is not available at %s", addr)
+	}
+	defer r.Body.Close()
+
+	var influxAPIResponse struct {
+		Results []struct {
+			StatementID int    `json:"statement_id"`
+			Error       string `json:"error"`
+		} `json:"results"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&influxAPIResponse)
+	if err != nil {
+		return err
+	}
+	if len(influxAPIResponse.Results) != 1 {
+		return fmt.Errorf("something is not right, could not parse influx response")
+	}
+	if influxAPIResponse.Results[0].Error != "" {
+		return fmt.Errorf(influxAPIResponse.Results[0].Error)
+	}
+
+	return nil
+}
+
 func main() {
 	var influxAddr string
 	var influxDatabase string
 	var hcitoolBin, hcidumpBin string
-	flag.StringVar(&influxAddr, "influx-addr", "", "address to influxdb for storing measurements")
+	flag.StringVar(&influxAddr, "influx-addr", "http://localhost:8086", "address to influxdb for storing measurements")
 	flag.StringVar(&influxDatabase, "influx-db", "ruuvi", "name of the influx database")
 	flag.StringVar(&hcitoolBin, "hcitool-binary", "/usr/bin/hcitool", "path to hcitool binary")
 	flag.StringVar(&hcidumpBin, "hcidump-binary", "/usr/bin/hcidump", "path to hdidump binary")
@@ -123,6 +152,12 @@ func main() {
 
 	done := make(chan error, 1)
 	data := make(chan []byte, 100)
+
+	// ensure that influxdb is accessible and database exists
+	err := ensureInfluxDBExists(influxAddr, influxDatabase)
+	if err != nil {
+		panic(err)
+	}
 
 	// ensure that hcitool/hcidump binaries exists
 	if _, err := os.Stat(hcitoolBin); errors.Is(err, os.ErrNotExist) {
@@ -133,7 +168,7 @@ func main() {
 	}
 
 	hciscan := NewProcess(fmt.Sprintf("%s lescan --duplicates --passive", hcitoolBin), done, false, data)
-	err := hciscan.Start()
+	err = hciscan.Start()
 	if err != nil {
 		log.Println("unable to start hciscan process:", err)
 		return
@@ -162,30 +197,28 @@ func main() {
 				// log.Printf("ruuvi: looks like a measurement from %s but format is unknown: %s", m.MAC.String(), string(d))
 			} else if err == nil {
 				log.Printf("measurment: mac: %s; temperature: %2f; humidity: %2f; pressure: %d; battery: %2f; rssi: %d", m.MAC.String(), m.Temperature, m.Humidity, m.Pressure, m.BatteryVoltage, m.RSSI)
-				if influxAddr != "" {
-					buf := new(bytes.Buffer)
-					_, err := buf.WriteString(m.InfluxLineProtocol())
-					if err != nil {
-						log.Println("failed to write line to buffer", err)
-						continue
-					}
-					resp, err := http.Post(fmt.Sprintf("%s/write?db=%s", influxAddr, influxDatabase), "text/plain", buf)
-					if err != nil {
-						log.Println("failed to POST data to influx:", err)
-						continue
-					}
-					defer resp.Body.Close()
+				buf := new(bytes.Buffer)
+				_, err := buf.WriteString(m.InfluxLineProtocol())
+				if err != nil {
+					log.Println("failed to write line to buffer", err)
+					continue
+				}
+				resp, err := http.Post(fmt.Sprintf("%s/write?db=%s", influxAddr, influxDatabase), "text/plain", buf)
+				if err != nil {
+					log.Println("failed to POST data to influx:", err)
+					continue
+				}
+				defer resp.Body.Close()
 
-					if resp.StatusCode != http.StatusNoContent {
-						log.Printf("unexpected return code, expected %d but got %d", http.StatusNoContent, resp.StatusCode)
-						reasons, err := ioutil.ReadAll(resp.Body)
-						if err != nil {
-							log.Println("could not read body")
-							continue
-						}
-						log.Println(string(reasons))
+				if resp.StatusCode != http.StatusNoContent {
+					log.Printf("unexpected return code, expected %d but got %d", http.StatusNoContent, resp.StatusCode)
+					reasons, err := ioutil.ReadAll(resp.Body)
+					if err != nil {
+						log.Println("could not read body")
 						continue
 					}
+					log.Println(string(reasons))
+					continue
 				}
 			}
 		case <-done:
