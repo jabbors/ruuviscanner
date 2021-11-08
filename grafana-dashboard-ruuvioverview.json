@@ -15,6 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "iteration": 1636397691574,
   "links": [],
   "panels": [
     {
@@ -51,7 +52,7 @@
       "links": [
         {
           "title": "measurements",
-          "url": "d/NbgSxy2Zk/ruuvi-sensor-measurements?orgId=1&from=now-24h&to=now&var-sensor=00:11:22:33:44:55"
+          "url": "d/NbgSxy2Zk/ruuvi-sensor-measurements?orgId=1&from=now-24h&to=now&var-sensor=$sensor"
         }
       ],
       "mappingType": 1,
@@ -127,8 +128,8 @@
           "tags": [
             {
               "key": "sensor",
-              "operator": "=",
-              "value": "00:11:22:33:44:55"
+              "operator": "=~",
+              "value": "/^$sensor$/"
             }
           ]
         }
@@ -136,7 +137,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Simulator",
+      "title": "RuuviTag",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -153,7 +154,36 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "00:11:22:33:44:55",
+          "value": "00:11:22:33:44:55"
+        },
+        "datasource": null,
+        "definition": "SHOW TAG VALUES ON \"ruuvi\" WITH KEY = \"sensor\"",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "sensor",
+        "options": [],
+        "query": "SHOW TAG VALUES ON \"ruuvi\" WITH KEY = \"sensor\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
@@ -176,5 +206,5 @@
   "timezone": "",
   "title": "Ruuvi Overview",
   "uid": "k9oQHVhZz",
-  "version": 1
+  "version": 2
 }
