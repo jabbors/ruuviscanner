@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/hex"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -113,20 +114,31 @@ func (p *process) Stop() error {
 func main() {
 	var influxAddr string
 	var influxDatabase string
+	var hcitoolBin, hcidumpBin string
 	flag.StringVar(&influxAddr, "influx-addr", "", "address to influxdb for storing measurements")
 	flag.StringVar(&influxDatabase, "influx-db", "ruuvi", "name of the influx database")
+	flag.StringVar(&hcitoolBin, "hcitool-binary", "/usr/bin/hcitool", "path to hcitool binary")
+	flag.StringVar(&hcidumpBin, "hcidump-binary", "/usr/bin/hcidump", "path to hdidump binary")
 	flag.Parse()
 
 	done := make(chan error, 1)
 	data := make(chan []byte, 100)
 
-	hciscan := NewProcess("hcitool lescan --duplicates --passive", done, false, data)
+	// ensure that hcitool/hcidump binaries exists
+	if _, err := os.Stat(hcitoolBin); errors.Is(err, os.ErrNotExist) {
+		panic(fmt.Sprintf("%s does not exist", hcitoolBin))
+	}
+	if _, err := os.Stat(hcidumpBin); errors.Is(err, os.ErrNotExist) {
+		panic(fmt.Sprintf("%s does not exist", hcidumpBin))
+	}
+
+	hciscan := NewProcess(fmt.Sprintf("%s lescan --duplicates --passive", hcitoolBin), done, false, data)
 	err := hciscan.Start()
 	if err != nil {
 		log.Println("unable to start hciscan process:", err)
 		return
 	}
-	hcidump := NewProcess("hcidump --raw", done, true, data)
+	hcidump := NewProcess(fmt.Sprintf("%s --raw", hcidumpBin), done, true, data)
 	err = hcidump.Start()
 	if err != nil {
 		log.Println("unable to start hcidump process:", err)
