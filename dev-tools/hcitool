@@ -1,0 +1,71 @@
+#!/bin/bash
+
+echo "LE Scan ..."
+
+iterations=0
+while true
+do
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "54:54:A4:F0:C2:A2 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "54:54:A4:F0:C2:A2 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "EC:C6:F1:18:35:60 (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "F0:D8:16:17:98:B4 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "4F:2F:D7:75:4C:27 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "EC:C6:F1:18:35:60 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "F0:D8:16:17:98:B4 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+echo "2E:E8:A0:2A:B4:D8 (unknown)"
+echo "72:7F:34:69:FE:C1 (unknown)"
+echo "50:32:37:7D:DA:CE (unknown)"
+echo "C9:2A:D5:F4:8E:58 (unknown)"
+echo "43:04:E2:1B:47:79 (unknown)"
+iterations=$((iterations +1))
+if [ $iterations -eq 5 ]
+then
+    break
+fi
+sleep 1
+done
