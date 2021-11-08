@@ -18,6 +18,7 @@ import (
 
 const (
 	hcidumpDataStart = 0x3E
+	version          = "1.0"
 )
 
 type process struct {
@@ -144,11 +145,18 @@ func main() {
 	var influxAddr string
 	var influxDatabase string
 	var hcitoolBin, hcidumpBin string
+	var versFlag bool
 	flag.StringVar(&influxAddr, "influx-addr", "http://localhost:8086", "address to influxdb for storing measurements")
 	flag.StringVar(&influxDatabase, "influx-db", "ruuvi", "name of the influx database")
 	flag.StringVar(&hcitoolBin, "hcitool-binary", "/usr/bin/hcitool", "path to hcitool binary")
 	flag.StringVar(&hcidumpBin, "hcidump-binary", "/usr/bin/hcidump", "path to hdidump binary")
+	flag.BoolVar(&versFlag, "version", false, "print version")
 	flag.Parse()
+
+	if versFlag {
+		fmt.Printf("ruuviscanner: version=%s\n", version)
+		os.Exit(0)
+	}
 
 	done := make(chan error, 1)
 	data := make(chan []byte, 100)
