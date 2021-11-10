@@ -1,6 +1,6 @@
 # ruuviscanner
 
-ruuviscanner is an application listening for RuuviTag broadcasts and converting them measurements suitable for storing in InfluxDB.
+ruuviscanner is an application listening for RuuviTag broadcasts and converting them to measurements suitable for storing in InfluxDB.
 
 The code is inspired by https://github.com/Scrin/RuuviCollector, but I needed a more lightweight application that can run on
 a [RaspberryPi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/).
@@ -28,20 +28,20 @@ go build && ./ruuviscanner
 
 4. Open `http://localhost:3000/ruuvi/` in your browser to view the collected observations.
 
-## Install the scanner on a RaspberryPi Zero
+## Install the scanner on a RaspberryPi Zero W
 
 1. Enable remote access accoding to https://www.raspberrypi.org/documentation/remote-access/ssh/
 
 2. Cross-compile for Linux ARM
 
 ```
-GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o ruuviscanner_linux-arm
+GOOS=linux GOARCH=arm GOARM=6 CGO_ENABLED=0 go build -o ruuviscanner.linux-arm32
 ```
 
 3. Copy the binary to your pi
 
 ```
-scp ruuviscanner_linux-arm pi@<your-pis-ip>:/usr/local/bin/ruuviscanner
+scp ruuviscanner.linux-arm32 pi@<your-pis-ip>:/usr/local/bin/ruuviscanner
 ```
 
 4. Install the dependencies on your Pi
