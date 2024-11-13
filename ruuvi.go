@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
@@ -34,20 +35,20 @@ type advertisement struct {
 
 // Measurement represents sensor readings transmitted by a RuuviTag
 type Measurement struct {
-	MAC             net.HardwareAddr
-	RSSI            int
-	DataFormat      int
-	Humidity        float64
-	Temperature     float64
-	Pressure        int
-	AccelerationX   float64
-	AccelerationY   float64
-	AccelerationZ   float64
-	BatteryVoltage  float64
-	TxPower         int
-	MovementCounter int
-	SequenceNr      int
-	advertisements  []advertisement
+	MAC             net.HardwareAddr `json:"-"`
+	RSSI            int              `json:"rssi"`
+	DataFormat      int              `json:"-"`
+	Humidity        float64          `json:"humidity"`
+	Temperature     float64          `json:"temperature"`
+	Pressure        int              `json:"pressure"`
+	AccelerationX   float64          `json:"-"`
+	AccelerationY   float64          `json:"-"`
+	AccelerationZ   float64          `json:"-"`
+	BatteryVoltage  float64          `json:"battery"`
+	TxPower         int              `json:"-"`
+	MovementCounter int              `json:"-"`
+	SequenceNr      int              `json:"-"`
+	advertisements  []advertisement  `json:"-"`
 }
 
 func reverse(b []byte) {
@@ -237,4 +238,12 @@ func (m *Measurement) InfluxLineProtocol() string {
 		m.Pressure,
 		m.BatteryVoltage,
 		m.RSSI)
+}
+
+func (m *Measurement) MqttMessage() (string, error) {
+	jsonBytes, err := json.Marshal(m)
+	if err != nil {
+		return "", fmt.Errorf("failed to serialze data: %s", err)
+	}
+	return string(jsonBytes), nil
 }
