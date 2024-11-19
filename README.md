@@ -1,6 +1,6 @@
 # ruuviscanner
 
-ruuviscanner is an application listening for RuuviTag broadcasts and converting them to measurements suitable for storing in InfluxDB.
+ruuviscanner is an application listening for RuuviTag broadcasts and converting them to measurements suitable for storing in InfluxDB or publishing to an MQTT topic for Home Assistant integration.
 
 The code is inspired by https://github.com/Scrin/RuuviCollector, but I needed a more lightweight application that can run on
 a [RaspberryPi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/).
