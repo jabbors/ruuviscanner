@@ -206,6 +206,9 @@ func main() {
 	var mqttUsername string
 	var mqttPassword string
 	var mqttTopicLevel string
+	var mqttPublishDurationInt int
+	var mqttPublishDuration time.Duration
+	var mqttLastPublish map[string]time.Time
 	var mqttEnable bool
 	var hcitoolBin, hcidumpBin string
 	var versFlag bool
@@ -217,6 +220,7 @@ func main() {
 	flag.StringVar(&mqttUsername, "mqtt-user", "", "username for MQTT broker")
 	flag.StringVar(&mqttPassword, "mqtt-pass", "", "password for MQTT broker")
 	flag.StringVar(&mqttTopicLevel, "mqtt-topic-level", "ruuvi", "mqtt topic level")
+	flag.IntVar(&mqttPublishDurationInt, "mqtt-publish-duration", 60, "duration (in seconds) between published for each sensor")
 	flag.BoolVar(&mqttEnable, "mqtt-enable", false, "enable storage in MQTT")
 	flag.StringVar(&hcitoolBin, "hcitool-binary", "/usr/bin/hcitool", "path to hcitool binary")
 	flag.StringVar(&hcidumpBin, "hcidump-binary", "/usr/bin/hcidump", "path to hdidump binary")
@@ -243,6 +247,11 @@ func main() {
 
 	// ensure the MQTT broker is accessible
 	if mqttEnable {
+		mqttLastPublish = make(map[string]time.Time)
+		mqttPublishDuration, err = time.ParseDuration(fmt.Sprintf("%ds", mqttPublishDurationInt))
+		if err != nil {
+			panic(err)
+		}
 		mqttClient, err = setupMqttClient(mqttBroker, mqttPort, mqttUsername, mqttPassword)
 		if err != nil {
 			panic(err)
@@ -299,9 +308,17 @@ func main() {
 					}
 				}
 				if mqttEnable {
-					err := publishToMqtt(mqttClient, mqttTopicLevel, m)
-					if err != nil {
-						log.Printf("publishing data to MQTT failed: %s", err)
+					lastPublish, ok := mqttLastPublish[m.MAC.String()]
+					if !ok {
+						lastPublish = time.Unix(0, 0)
+					}
+					if time.Since(lastPublish) > mqttPublishDuration {
+						err := publishToMqtt(mqttClient, mqttTopicLevel, m)
+						if err != nil {
+							log.Printf("publishing data to MQTT failed: %s", err)
+						} else {
+							mqttLastPublish[m.MAC.String()] = time.Now()
+						}
 					}
 				}
 			}
