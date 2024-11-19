@@ -20,7 +20,7 @@ import (
 
 const (
 	hcidumpDataStart = 0x3E
-	version          = "1.0"
+	version          = "1.1"
 )
 
 type process struct {
